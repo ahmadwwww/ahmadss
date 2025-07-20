@@ -61,7 +61,7 @@ export const submitLoanApplication = async (
       };
 
       // Remove large image data before saving
-      const { cnicImage, selfieImage, ...applicationToStore } = newApplication;
+      const { cnicImageUrl, selfieImageUrl, ...applicationToStore } = newApplication;
 
       // Auto-approve if income >= 50000
       if (applicationToStore.monthlyIncome >= 50000) {
