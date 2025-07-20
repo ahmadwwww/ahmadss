@@ -1,19 +1,7 @@
 import { Tabs } from 'expo-router';
-import { router } from 'expo-router';
 import { Chrome as Home, User, FileText, Settings } from 'lucide-react-native';
-import { useAuth } from '@/hooks/useAuth';
 
 export default function TabLayout() {
-  const { user } = useAuth();
-
-  const handleTabPress = (tabName: string) => {
-    if (!user && (tabName === 'application' || tabName === 'profile')) {
-      router.push('/auth');
-      return false; // Prevent default navigation
-    }
-    return true; // Allow navigation
-  };
-
   return (
     <Tabs
       screenOptions={{
@@ -46,13 +34,6 @@ export default function TabLayout() {
             <FileText size={size} color={color} />
           ),
         }}
-        listeners={{
-          tabPress: (e) => {
-            if (!handleTabPress('application')) {
-              e.preventDefault();
-            }
-          },
-        }}
       />
       <Tabs.Screen
         name="profile"
@@ -61,13 +42,6 @@ export default function TabLayout() {
           tabBarIcon: ({ size, color }) => (
             <User size={size} color={color} />
           ),
-        }}
-        listeners={{
-          tabPress: (e) => {
-            if (!handleTabPress('profile')) {
-              e.preventDefault();
-            }
-          },
         }}
       />
       <Tabs.Screen

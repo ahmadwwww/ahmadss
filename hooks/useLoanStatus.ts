@@ -18,22 +18,25 @@ export function useLoanStatus() {
   const [loanData, setLoanData] = useState<LoanData | null>(null);
   const [loading, setLoading] = useState(true);
   const isMountedRef = useRef(true);
+  const [lastUserId, setLastUserId] = useState<string | null>(null);
 
   useEffect(() => {
     isMountedRef.current = true;
-    if (user) {
+    if (user && user.uid !== lastUserId) {
       fetchLoanStatus();
-    } else {
+      setLastUserId(user.uid);
+    } else if (!user) {
       if (isMountedRef.current) {
         setLoanData(null);
         setLoading(false);
+        setLastUserId(null);
       }
     }
     
     return () => {
       isMountedRef.current = false;
     };
-  }, [user]);
+  }, [user, lastUserId]);
 
   const fetchLoanStatus = async () => {
     if (!user) return;

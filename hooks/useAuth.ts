@@ -12,15 +12,19 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const isMountedRef = useRef(true);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     isMountedRef.current = true;
-    checkAuthState();
+    if (!initialized) {
+      checkAuthState();
+      setInitialized(true);
+    }
     
     return () => {
       isMountedRef.current = false;
     };
-  }, []);
+  }, [initialized]);
 
   const checkAuthState = async () => {
     try {
