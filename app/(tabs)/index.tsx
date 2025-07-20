@@ -96,9 +96,20 @@ export default function HomeScreen() {
           
           {loanData?.status === 'approved' && (
             <View style={styles.loanDetails}>
+              {!loanData.loanAmount && (
+                <TouchableOpacity
+                  style={styles.selectAmountButton}
+                  onPress={() => router.push('/loan-amount')}>
+                  <Text style={styles.selectAmountButtonText}>
+                    Select Loan Amount
+                  </Text>
+                </TouchableOpacity>
+              )}
               <View style={styles.detailRow}>
                 <Text style={styles.detailLabel}>Loan Amount:</Text>
-                <Text style={styles.detailValue}>${loanData.loanAmount?.toLocaleString()}</Text>
+                <Text style={styles.detailValue}>
+                  {loanData.loanAmount ? `Rs. ${loanData.loanAmount.toLocaleString()}` : 'Not selected'}
+                </Text>
               </View>
               <View style={styles.detailRow}>
                 <Text style={styles.detailLabel}>Interest Rate:</Text>
@@ -294,6 +305,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1F2937',
     marginLeft: 12,
+  },
+  selectAmountButton: {
+    backgroundColor: '#10B981',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+  selectAmountButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
   adminButton: {
     backgroundColor: '#6366F1',

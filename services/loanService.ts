@@ -151,3 +151,38 @@ export const canUserApply = async (userId: string): Promise<boolean> => {
   
   return false;
 };
+
+export const selectLoanAmount = async (userId: string, amount: number): Promise<void> => {
+  try {
+    const existingApp = await getUserApplication(userId);
+    if (!existingApp || existingApp.status !== 'approved') {
+      throw new Error('No approved loan application found');
+    }
+
+    // Update the application with selected loan amount
+    const updatedApp = {
+      ...existingApp,
+      loanAmount: amount,
+      monthlyPayment: Math.round((amount * 0.125 / 12 * Math.pow(1 + 0.125/12, 12)) / (Math.pow(1 + 0.125/12, 12) - 1)),
+      status: 'disbursed' as const,
+    };
+
+    // Save updated application
+    await AsyncStorage.setItem('userApplication_' + userId, JSON.stringify(updatedApp));
+    
+    // Update in all applications list
+    const allApps = await AsyncStorage.getItem('allApplications');
+    if (allApps) {
+      const applications = JSON.parse(allApps);
+      const updatedApplications = applications.map((app: any) => 
+        app.userId === userId ? updatedApp : app
+      );
+      await AsyncStorage.setItem('allApplications', JSON.stringify(updatedApplications));
+    }
+
+    console.log('Loan amount selected:', { userId, amount });
+  } catch (error) {
+    console.error('Error selecting loan amount:', error);
+    throw new Error('Failed to confirm loan amount');
+  }
+};
