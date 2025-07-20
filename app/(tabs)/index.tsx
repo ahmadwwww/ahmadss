@@ -9,13 +9,22 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 import { CreditCard, Clock, CircleCheck as CheckCircle, Circle as XCircle, Bell } from 'lucide-react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoanStatus } from '@/hooks/useLoanStatus';
 
 export default function HomeScreen() {
   const { user } = useAuth();
-  const { loanData, loading } = useLoanStatus();
+  const { loanData, loading, refetch } = useLoanStatus();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (user) {
+        refetch();
+      }
+    }, [user, refetch])
+  );
 
   const getStatusIcon = (status: string) => {
     switch (status) {
